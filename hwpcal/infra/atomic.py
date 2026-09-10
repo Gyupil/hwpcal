@@ -57,8 +57,12 @@ def _replace(src: Path, dst: Path) -> None:
 
 def _fsync_dir(directory: Path) -> None:
     # 디렉터리 항목(rename 결과)까지 디스크에 반영. Windows는 디렉터리 fsync를 지원하지 않는다.
-    if sys.platform == "win32":
-        return
+    # 플랫폼 분기를 if 블록 안에 두어야 mypy가 어느 OS에서도 도달 불가 문을 보고하지 않는다.
+    if sys.platform != "win32":
+        _fsync_dir_posix(directory)
+
+
+def _fsync_dir_posix(directory: Path) -> None:
     try:
         fd = os.open(directory, os.O_RDONLY)
     except OSError:
