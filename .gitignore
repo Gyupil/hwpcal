@@ -1,0 +1,26 @@
+docs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+
+# 도구 캐시
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# OS / 편집기
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# 로컬 실행 데이터
+tmp-data/
