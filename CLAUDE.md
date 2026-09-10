@@ -21,6 +21,7 @@ uv run pre-commit install    # 최초 1회
 uv run ruff check .
 uv run ruff format --check .
 uv run mypy
+uv run mypy --platform win32   # Windows 잡과 같은 판정을 로컬에서 재현
 uv run pytest                # --cov 로 커버리지, --real-api 로 실제 Google API 테스트
 
 uv run hwpcal --data-dir ./tmp-data   # 빈 앱 실행 (= uv run python -m hwpcal)
@@ -118,3 +119,10 @@ export UV_PROJECT_ENVIRONMENT="$HOME/.venvs/hwpcal"    # 가상환경을 동기�
 
 GitHub Actions Windows 러너의 콘솔 인코딩은 cp1252다. 한글 로그를 stderr로 확인하는 서브프로세스 테스트는
 자식 프로세스에 `PYTHONUTF8=1`을 준다(`tests/integration/test_cli_smoke.py`). 로그 파일은 항상 UTF-8이다.
+
+### mypy의 플랫폼 판정
+
+mypy는 `sys.platform` 비교를 실행 중인 OS 기준으로 상수 평가한다. `if sys.platform == "win32": return`
+뒤에 오는 코드는 Windows 러너의 mypy에서 `unreachable` 오류가 된다(macOS에서는 통과). 플랫폼별 코드는
+`if sys.platform != "win32": _posix_impl()`처럼 if 블록 안에 두고, 푸시 전에
+`uv run mypy --platform win32`를 한 번 돌린다.
